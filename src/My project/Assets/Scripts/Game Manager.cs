@@ -15,26 +15,27 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI discardPileText;
     public void DrawCard()
     {
-        if (deck.Count >= 1)
-        {
-            Card randCard = deck[Random.Range(0, deck.Count)];
+        Debug.Log("draw card from game manager");
+        //if (deck.Count >= 1)
+        //{
+        //    Card randCard = deck[Random.Range(0, deck.Count)];
 
-            for (int i= 0; i < availableCardSlots.Length; i++)
-            {
-                if (availableCardSlots[i] == true)
-                {
-                    randCard.gameObject.SetActive(true);
-                    randCard.handIndex = i;
+        //    for (int i= 0; i < availableCardSlots.Length; i++)
+        //    {
+        //        if (availableCardSlots[i] == true)
+        //        {
+        //            randCard.gameObject.SetActive(true);
+        //            randCard.handIndex = i;
 
-                    randCard.transform.position = cardslots[i].position;
-                    randCard.hasBeenPlayed = false;
+        //            randCard.transform.position = cardslots[i].position;
+        //            randCard.hasBeenPlayed = false;
 
-                    availableCardSlots[i] = false;
-                    deck.Remove(randCard);
-                    return;
-                }
-            }
-        }
+        //            availableCardSlots[i] = false;
+        //            deck.Remove(randCard);
+        //            return;
+        //        }
+        //    }
+        //}
     }
 
     public void Shuffle()
@@ -51,7 +52,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        deckSizeText.text = deck.Count.ToString();
-        discardPileText.text = discardPile.Count.ToString();
+        //deckSizeText.text = deck.Count.ToString();
+        //discardPileText.text = discardPile.Count.ToString();
     }
 }
