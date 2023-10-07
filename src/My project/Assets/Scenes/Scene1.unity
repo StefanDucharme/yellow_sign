@@ -123,42 +123,16 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &667664228 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3527164645199759714, guid: 493e7ef1d2f49574c95b8cd7393247b8, type: 3}
-  m_PrefabInstance: {fileID: 7330791515038227120}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &667664229 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1867483814346531765, guid: 493e7ef1d2f49574c95b8cd7393247b8, type: 3}
   m_PrefabInstance: {fileID: 7330791515038227120}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &701715321 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3217425424212456399, guid: b10a2a33934249645b147f60afddbff8, type: 3}
-  m_PrefabInstance: {fileID: 8793599822257845064}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &701715322 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6802652766124203921, guid: b10a2a33934249645b147f60afddbff8, type: 3}
   m_PrefabInstance: {fileID: 8793599822257845064}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &701715327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 701715321}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b69174efd7346e14f9ac5de864053d54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Card1: {fileID: 3521880246848414842, guid: d04b503b7c4f96048b0b8decdc8b4fff, type: 3}
-  Card2: {fileID: 4515146216101048095, guid: ba98d9cc1b9343448b3af679b7156fe2, type: 3}
-  PlayerArea: {fileID: 1133986683}
-  EnemyArea: {fileID: 667664228}
 --- !u!1 &860542260
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,12 +162,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d68eae5ebbaf11e4bb655df846d9a239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deck: []
-  discardPile: []
-  cardslots: []
-  availableCardSlots: 
-  deckSizeText: {fileID: 0}
-  discardPileText: {fileID: 0}
+  HandSize: 5
+  AvailableCards:
+  - {fileID: 8592523384805735937, guid: 1530eb5dc6b914b41a2958bf8866778d, type: 3}
+  - {fileID: 8152282573806552249, guid: 996ad1190aa7ba147ac7fcbf7a146ee3, type: 3}
+  Deck: []
+  DiscardPile: []
+  PlayerArea: {fileID: 1133986683}
 --- !u!4 &860542262
 Transform:
   m_ObjectHideFlags: 0
@@ -898,14 +873,14 @@ PrefabInstance:
     - target: {fileID: 4945035151728923102, guid: b10a2a33934249645b147f60afddbff8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 701715327}
+      objectReference: {fileID: 860542261}
     - target: {fileID: 4945035151728923102, guid: b10a2a33934249645b147f60afddbff8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClick
+      value: DrawCard
       objectReference: {fileID: 0}
     - target: {fileID: 4945035151728923102, guid: b10a2a33934249645b147f60afddbff8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: DrawCards, Assembly-CSharp
+      value: GameManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6802652766124203921, guid: b10a2a33934249645b147f60afddbff8, type: 3}
       propertyPath: m_Pivot.x
@@ -990,10 +965,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3217425424212456399, guid: b10a2a33934249645b147f60afddbff8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 701715327}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b10a2a33934249645b147f60afddbff8, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
