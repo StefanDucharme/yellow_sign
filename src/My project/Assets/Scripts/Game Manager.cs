@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine.UIElements;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
     public enum GameState
     {
@@ -23,6 +25,10 @@ public class GameManager : MonoBehaviour
         Resolve,
         End
     }
+    
+    public GameObject PlayAreaObject;
+    public GameObject DiscardAreaObject;
+    public GameObject HandArea;
 
     public int HandSize = 5;
     public List<GameObject> AvailableCards = new List<GameObject>();
@@ -30,7 +36,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> Hand = new List<GameObject>();
     public List<GameObject> PlayArea = new List<GameObject>();
     public List<GameObject> DiscardPile = new List<GameObject>();
-    public GameObject PlayerArea;
+    
     public int TurnCount = 0;
     public GameState CurrentGameState;
     public Phase CurrentPhase;
@@ -42,11 +48,15 @@ public class GameManager : MonoBehaviour
 
     //public TextMeshProUGUI deckSizeText;
     //public TextMeshProUGUI discardPileText;
-
+    
     void Start()
     {
+        PlayAreaObject = GameObject.Find("PlayArea");
+        DiscardAreaObject = GameObject.Find("DiscardArea");
+        HandArea = GameObject.Find("HandArea");
 
         ChangeGameState(GameState.Start);
+
         foreach (var availableCard in AvailableCards)
         {
             GameObject playerCard = Instantiate(availableCard, new Vector3(0, 0, 0), Quaternion.identity);
@@ -71,6 +81,13 @@ public class GameManager : MonoBehaviour
         Deck.Add(playerCard);
         playerCard.GetComponent<BaseCard>().ChangeState(BaseCard.State.InDeck);
     }
+
+    public void EndTurn()
+    {
+        CurrentPhase = Phase.End;
+        //TODO emit?
+    }
+    
 
     public void ChangeGameState(GameState state)
     {
@@ -108,7 +125,8 @@ public class GameManager : MonoBehaviour
 
         if (Deck.Count >= 1)
         {
-            MoveCardFromDeckToHand(0);
+            var card = Deck[0];
+            MoveCardFromDeckToHand(card);
         }
     }
 
@@ -119,8 +137,7 @@ public class GameManager : MonoBehaviour
             //foreach item in discard pile, add to deck
             foreach (var card in DiscardPile)
             {
-                Deck.Add(card);
-                card.GetComponent<BaseCard>().ChangeState(BaseCard.State.InDeck);
+                MoveCardFromDiscardPileToDeck(card, false);
             }
 
             DiscardPile.Clear();
@@ -128,30 +145,73 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void MoveCardFromDeckToHand(int position)
+    public void MoveCardFromDeckToHand(GameObject card)
     {
-        GameObject card = Deck[position];
-        Deck.RemoveAt(position);
+        var foundCard = Deck.FirstOrDefault(c => c.GetInstanceID() == card.GetInstanceID());
+
+        if (foundCard == null)
+        {
+            throw new System.Exception("Card not found in deck");
+        }
+
+        Deck.Remove(foundCard);
         Hand.Add(card);
-        card.transform.SetParent(PlayerArea.transform, false);
-        card.GetComponent<BaseCard>().ChangeState(BaseCard.State.InHand);
+        card.transform.SetParent(HandArea.transform, false);
+        card.GetComponent<BaseCard>().OnDraw();
     }
 
     //move card from hand to play area
-    public void MoveCardFromHandToPlayArea(int position)
+    public void MoveCardFromHandToPlayArea(GameObject card)
     {
-        GameObject card = Hand[position];
-        Hand.Remove(card);
+        Debug.Log("move card from hand to play area");
+        var foundCard = Hand.FirstOrDefault(c => c.GetInstanceID() == card.GetInstanceID());
+
+        if (foundCard == null)
+        {
+            throw new System.Exception("Card not found in hand");
+        }
+
+        Hand.Remove(foundCard);
         PlayArea.Add(card);
-        card.GetComponent<BaseCard>().ChangeState(BaseCard.State.InPlay);
+        card.transform.SetParent(PlayAreaObject.transform, false);
+        card.GetComponent<BaseCard>().OnPlay();
+        MoveCardFromPlayAreaToDiscardPile(card);
     }
 
     //move card from play area to discard pile
-    public void MoveCardFromPlayAreaToDiscardPile(int position)
+    public void MoveCardFromPlayAreaToDiscardPile(GameObject card)
     {
-        GameObject card = PlayArea[position];
+        var foundCard = PlayArea.FirstOrDefault(c => c.GetInstanceID() == card.GetInstanceID());
+
+        if (foundCard == null)
+        {
+            throw new System.Exception("Card not found in play area");
+        }
+
+        PlayArea.Remove(foundCard);
         DiscardPile.Add(card);
-        card.GetComponent<BaseCard>().ChangeState(BaseCard.State.InDiscard);
+        card.transform.SetParent(DiscardAreaObject.transform, false);
+        card.GetComponent<BaseCard>().OnDiscard();
+    }
+
+    //move card from discard pile to deck
+    public void MoveCardFromDiscardPileToDeck(GameObject card, bool removeCard = true)
+    {
+        var foundCard = DiscardPile.FirstOrDefault(c => c.GetInstanceID() == card.GetInstanceID());
+
+        if (foundCard == null)
+        {
+            throw new System.Exception("Card not found in discard pile");
+        }
+
+        if (removeCard)
+        {
+            DiscardPile.Remove(foundCard);
+        }
+
+        Deck.Add(card);
+        card.transform.SetParent(null, false);
+        card.GetComponent<BaseCard>().OnReturnToDeck();
     }
     
 }

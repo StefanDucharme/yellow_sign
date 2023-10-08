@@ -20,7 +20,6 @@ public class BaseCard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("BaseCard was started");
     }
 
     // Update is called once per frame
@@ -31,23 +30,27 @@ public class BaseCard : MonoBehaviour
 
     public virtual void OnPlay()
     {
-        Debug.Log("BaseCard was played");
+        ChangeState(State.InPlay);
     }
 
     public virtual void OnDraw()
     {
-        Debug.Log("BaseCard was drawn");
-
+        ChangeState(State.InHand);
     }
 
     public virtual void OnDiscard()
     {
-        Debug.Log("BaseCard was discarded");
+        ChangeState(State.InDiscard);
+    }
+
+    public virtual void OnReturnToDeck()
+    {
+        ChangeState(State.InDeck);
     }
 
     public virtual void ChangeState(State state)
     {
-        Debug.Log($"BaseCard state changed {state}");
+        Debug.Log("Changing state of " + gameObject.name + " from " + CurrentState.ToString() +  "to " + state.ToString());
         CurrentState = state;
     }
 

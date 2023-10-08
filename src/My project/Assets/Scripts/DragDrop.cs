@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class DragDrop : MonoBehaviour
 {
     public GameObject Canvas;
+    public GameManager GM;
 
     private bool isDragging = false;
     private Vector2 startPosition;
@@ -17,6 +18,7 @@ public class DragDrop : MonoBehaviour
     private void Awake()
     {
         Canvas = GameObject.Find("Main Canvas");
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Start is called before the first frame update
@@ -60,8 +62,10 @@ public class DragDrop : MonoBehaviour
 
         if (isOverDropZone)
         {
-            transform.SetParent(dropZone.transform, false);
-            
+            //transform.SetParent(dropZone.transform, false);
+
+            GM.MoveCardFromHandToPlayArea(gameObject);
+
         }
         else
         {

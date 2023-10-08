@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class The_Bear : BaseCard
@@ -18,6 +19,13 @@ public class The_Bear : BaseCard
 
     public override void OnPlay()
     {
+        base.OnPlay();
         Debug.Log("The_Bear was played");
+
+        //Debug.Log("The_Bear is sleeping for 2 seconds");
+        //Thread.Sleep(2000);
+        //Debug.Log("The_Bear is done sleeping");
+
+        //TODO do things
     }
 }
