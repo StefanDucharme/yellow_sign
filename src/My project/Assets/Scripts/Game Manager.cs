@@ -7,7 +7,7 @@ using TMPro;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine.UIElements;
 
-public class GameManager : Singleton<GameManager>
+public class GameManager : MonoBehaviour
 {
     public enum GameState
     {
@@ -148,11 +148,7 @@ public class GameManager : Singleton<GameManager>
     public void MoveCardFromDeckToHand(GameObject card)
     {
         var foundCard = Deck.FirstOrDefault(c => c.GetInstanceID() == card.GetInstanceID());
-
-        if (foundCard == null)
-        {
-            throw new System.Exception("Card not found in deck");
-        }
+        
 
         Deck.Remove(foundCard);
         Hand.Add(card);
@@ -165,11 +161,7 @@ public class GameManager : Singleton<GameManager>
     {
         Debug.Log("move card from hand to play area");
         var foundCard = Hand.FirstOrDefault(c => c.GetInstanceID() == card.GetInstanceID());
-
-        if (foundCard == null)
-        {
-            throw new System.Exception("Card not found in hand");
-        }
+        
 
         Hand.Remove(foundCard);
         PlayArea.Add(card);
@@ -182,11 +174,7 @@ public class GameManager : Singleton<GameManager>
     public void MoveCardFromPlayAreaToDiscardPile(GameObject card)
     {
         var foundCard = PlayArea.FirstOrDefault(c => c.GetInstanceID() == card.GetInstanceID());
-
-        if (foundCard == null)
-        {
-            throw new System.Exception("Card not found in play area");
-        }
+        
 
         PlayArea.Remove(foundCard);
         DiscardPile.Add(card);
@@ -198,11 +186,7 @@ public class GameManager : Singleton<GameManager>
     public void MoveCardFromDiscardPileToDeck(GameObject card, bool removeCard = true)
     {
         var foundCard = DiscardPile.FirstOrDefault(c => c.GetInstanceID() == card.GetInstanceID());
-
-        if (foundCard == null)
-        {
-            throw new System.Exception("Card not found in discard pile");
-        }
+        
 
         if (removeCard)
         {
