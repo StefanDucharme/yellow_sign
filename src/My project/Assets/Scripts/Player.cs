@@ -50,13 +50,14 @@ public class Player : MonoBehaviour
         if (dmg >= CurrentHealth)
         {
             CurrentHealth = 0;
-            Debug.Log("The_Inquisitor died");
+            Debug.Log("Player died");
             ChangeState(State.IsDead);
 
             return;
         }
 
         CurrentHealth -= dmg;
+        Debug.Log($"Player took {dmg} dmg");
     }
 
     public virtual void ApplyEffect()
