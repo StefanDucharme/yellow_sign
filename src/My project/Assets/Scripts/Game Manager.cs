@@ -29,6 +29,9 @@ public class GameManager : MonoBehaviour
     public GameObject PlayAreaObject;
     public GameObject DiscardAreaObject;
     public GameObject HandArea;
+    public GameObject EnemyArea;
+
+    public GameObject Player;
 
     public int HandSize = 5;
     public List<GameObject> AvailableCards = new List<GameObject>();
@@ -36,7 +39,12 @@ public class GameManager : MonoBehaviour
     public List<GameObject> Hand = new List<GameObject>();
     public List<GameObject> PlayArea = new List<GameObject>();
     public List<GameObject> DiscardPile = new List<GameObject>();
-    
+
+    public List<GameObject> AvailableEnemies = new List<GameObject>();
+    public List<GameObject> EnemyQueue = new List<GameObject>();
+    public List<GameObject> InPlayEnemies = new List<GameObject>();
+    public List<GameObject> DeadEnemies = new List<GameObject>();
+
     public int TurnCount = 0;
     public GameState CurrentGameState;
     public Phase CurrentPhase;
@@ -54,6 +62,7 @@ public class GameManager : MonoBehaviour
         PlayAreaObject = GameObject.Find("PlayArea");
         DiscardAreaObject = GameObject.Find("DiscardArea");
         HandArea = GameObject.Find("HandArea");
+        EnemyArea = GameObject.Find("EnemyArea");
 
         ChangeGameState(GameState.Start);
 
@@ -64,6 +73,12 @@ public class GameManager : MonoBehaviour
         }
 
         ShuffleDeck();
+
+        foreach (var availableEnemy in AvailableEnemies)
+        {
+            GameObject enemy = Instantiate(availableEnemy, new Vector3(0, 0, 0), Quaternion.identity);
+            EnemyQueue.Add(enemy);
+        }
 
         //TODO draw hand
         ChangeGameState(GameState.PlayerTurn);
@@ -197,5 +212,23 @@ public class GameManager : MonoBehaviour
         card.transform.SetParent(null, false);
         card.GetComponent<BaseCard>().OnReturnToDeck();
     }
-    
+
+    public void SpawnEnemy()
+    {
+        GameObject enemy;
+
+        if (EnemyQueue.Count > 0)
+        {
+            enemy = EnemyQueue[0];
+        }
+        else
+        {
+            Debug.Log("No enemies left to spawn");
+            return;
+        }
+
+        InPlayEnemies.Add(enemy);
+        enemy.transform.SetParent(EnemyArea.transform, false);
+        enemy.GetComponent<BaseEnemy>().OnPlay();
+    }
 }

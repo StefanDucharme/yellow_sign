@@ -3,24 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseCard : MonoBehaviour
+public class BaseEnemy : MonoBehaviour
 {
     public enum State
     {
         Unavailable,
-        InDeck,
-        InHand,
+        Avialable,
         InPlay,
-        InDiscard
+        IsDead
     }
 
     public State CurrentState;
-    public Guid UniqueID;
+    public Guid UniqueID = new Guid();
+    public float BaseHealth = 10;
 
     // Start is called before the first frame update
     void Start()
     {
-        this.UniqueID = Guid.NewGuid();
     }
 
     // Update is called once per frame
@@ -34,25 +33,30 @@ public class BaseCard : MonoBehaviour
         ChangeState(State.InPlay);
     }
 
-    public virtual void OnDraw()
+    public virtual void OnAction()
     {
-        ChangeState(State.InHand);
+        
     }
 
-    public virtual void OnDiscard()
+    public virtual void OnDeath()
     {
-        ChangeState(State.InDiscard);
-    }
-
-    public virtual void OnReturnToDeck()
-    {
-        ChangeState(State.InDeck);
+        ChangeState(State.IsDead);
     }
 
     public virtual void ChangeState(State state)
     {
         Debug.Log("Changing state of " + gameObject.name + " from " + CurrentState.ToString() +  "to " + state.ToString());
         CurrentState = state;
+    }
+
+    public virtual void TakeDamage(float dmg)
+    {
+
+    }
+
+    public virtual void ApplyEffect()
+    {
+
     }
 
 }
