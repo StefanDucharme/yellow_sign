@@ -13,6 +13,7 @@ public class The_Inquisitor : BaseEnemy
 
     void Start()
     {
+        base.Start();
         Debug.Log("The_Inquisitor was started");
         this.CurrentDamage = this.BaseDamage;
         this.CurrentHealth = this.MaxHealth;

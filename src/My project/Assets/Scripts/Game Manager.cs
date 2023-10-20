@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,30 +7,15 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
-public class GameManager : MonoBehaviour
+public partial class GameManager : MonoBehaviour
 {
-    public enum GameState
-    {
-        Start,
-        PlayerTurn,
-        EnemyTurn,
-        End
-    }
-
-    public enum Phase
-    {
-        Start,
-        Draw,
-        Main,
-        Resolve,
-        End
-    }
-    
     public GameObject PlayAreaObject;
     public GameObject DiscardAreaObject;
     public GameObject HandArea;
     public GameObject EnemyArea;
+    public NotificationsManager NotificationsManager;
 
     public GameObject Player;
 
@@ -46,25 +32,26 @@ public class GameManager : MonoBehaviour
     public List<GameObject> DeadEnemies = new List<GameObject>();
 
     public int TurnCount = 0;
-    public GameState CurrentGameState;
-    public Phase CurrentPhase;
+    public Enums.GameState CurrentGameState;
+    public Enums.Phase CurrentPhase;
     public bool DisableInput = true;
-    
+
 
     //public Transform[] cardslots;
     //public bool[] availableCardSlots;
 
     //public TextMeshProUGUI deckSizeText;
     //public TextMeshProUGUI discardPileText;
-    
+
     void Start()
     {
         PlayAreaObject = GameObject.Find("PlayArea");
         DiscardAreaObject = GameObject.Find("DiscardArea");
         HandArea = GameObject.Find("HandArea");
         EnemyArea = GameObject.Find("EnemyArea");
+        NotificationsManager = GameObject.Find("NotificationsManager").GetComponent<NotificationsManager>();
 
-        ChangeGameState(GameState.Start);
+        ChangeGameState(Enums.GameState.Start);
 
         foreach (var availableCard in AvailableCards)
         {
@@ -81,8 +68,8 @@ public class GameManager : MonoBehaviour
         }
 
         //TODO draw hand
-        ChangeGameState(GameState.PlayerTurn);
-        ChangePhase(Phase.Start);
+        ChangeGameState(Enums.GameState.PlayerTurn);
+        ChangePhase(Enums.Phase.Start);
     }
     
     void Update()
@@ -99,21 +86,22 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
-        CurrentPhase = Phase.End;
-        //TODO emit?
+        ChangePhase(Enums.Phase.End);
     }
     
 
-    public void ChangeGameState(GameState state)
+    public void ChangeGameState(Enums.GameState state)
     {
         CurrentGameState = state;
         //TODO emit?
+        OnGameStateChanged();
     }
 
-    public void ChangePhase(Phase phase)
+    public void ChangePhase(Enums.Phase phase)
     {
         CurrentPhase = phase;
         //TODO emit?
+        OnPhaseChanged();
     }
 
     public void ShuffleDeck()
@@ -230,5 +218,27 @@ public class GameManager : MonoBehaviour
         InPlayEnemies.Add(enemy);
         enemy.transform.SetParent(EnemyArea.transform, false);
         enemy.GetComponent<BaseEnemy>().OnPlay();
+    }
+
+    protected virtual void OnGameStateChanged()
+    {
+        var notification = new NotificationData()
+        {
+            Sender = this,
+            Data = CurrentGameState
+        };
+
+        NotificationsManager.PostNotification(notification, "OnGameStateChanged");
+    }
+
+    protected virtual void OnPhaseChanged()
+    {
+        var notification = new NotificationData()
+        {
+            Sender = this,
+            Data = CurrentPhase
+        };
+
+        NotificationsManager.PostNotification(notification, "OnPhaseChanged");
     }
 }

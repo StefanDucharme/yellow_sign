@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public Guid UniqueID = new Guid();
     public float MaxHealth = 10;
     public float CurrentHealth;
+    public List<BaseStatusEffect> statusEffects = new List<BaseStatusEffect>();
 
     // Start is called before the first frame update
     void Start()
